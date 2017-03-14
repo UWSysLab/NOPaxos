@@ -1,0 +1,12 @@
+newview: 1
+log: {
+  replicaidx: 0
+  view: 0
+  lastNormalView: 0
+}
+
+log: {
+  replicaidx: 1
+  view: 0
+  lastNormalView: 0
+}

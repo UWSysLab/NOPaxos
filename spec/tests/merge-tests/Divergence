@@ -1,0 +1,25 @@
+newview: 2
+log: {
+  replicaidx: 0
+  view: 2
+  lastNormalView: 1
+  entries: {view: 0; opnum: 1; id: "1/1"; spec: f}
+  entries: {view: 1; opnum: 2; id: "2/1"; spec: t}
+  entries: {view: 1; opnum: 3; id: "1/2"; spec: t}
+  entries: {view: 1; opnum: 4; id: "3/1"; spec: t}
+}
+
+log: {
+  replicaidx: 1
+  view: 2
+  lastNormalView: 1
+  entries: {view: 0; opnum: 1; id: "1/1"; spec: f}
+  entries: {view: 1; opnum: 2; id: "1/2"; spec: t}
+  entries: {view: 1; opnum: 3; id: "2/1"; spec: t}
+  entries: {view: 1; opnum: 4; id: "3/1"; spec: t}
+}
+
+expected: {view: 0; opnum: 1; id: "1/1"; spec: f}
+expected: {view: 2; opnum: 2; id: "2/1"; spec: t}
+expected: {view: 2; opnum: 3; id: "1/2"; spec: t}
+expected: {view: 2; opnum: 4; id: "3/1"; spec: t}

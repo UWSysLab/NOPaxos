@@ -1,0 +1,17 @@
+newview: 1
+log: {
+  replicaidx: 0
+  view: 0
+  lastNormalView: 0
+  entries: {view: 0; opnum: 1; id: "1/1"; spec: f}
+  entries: {view: 0; opnum: 2; id: "1/2"; spec: f}
+}
+
+log: {
+  replicaidx: 1
+  view: 0
+  lastNormalView: 0
+}
+
+expected: {view: 0; opnum: 1; id: "1/1"; spec: f}
+expected: {view: 0; opnum: 2; id: "1/2"; spec: f}

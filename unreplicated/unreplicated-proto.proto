@@ -1,0 +1,22 @@
+import "common/request.proto";
+
+package specpaxos.unreplicated.proto;
+
+message RequestMessage {
+    required specpaxos.Request req = 1;
+}
+
+message ReplyMessage {
+    optional uint64 view = 1;
+    optional uint64 opnum = 2;
+    required specpaxos.Request req = 3;
+    required bytes reply = 4;
+}
+
+message UnloggedRequestMessage {
+    required specpaxos.UnloggedRequest req = 1;
+}
+
+message UnloggedReplyMessage {
+    required bytes reply = 1;
+}

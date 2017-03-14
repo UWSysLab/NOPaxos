@@ -1,0 +1,87 @@
+import "common/request.proto";
+
+package specpaxos.vr.proto;
+
+message RequestMessage {
+    required specpaxos.Request req = 1;
+}
+
+message ReplyMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    required bytes reply = 3;
+    required uint64 clientreqid = 4;
+}
+
+message UnloggedRequestMessage {
+    required specpaxos.UnloggedRequest req = 1;
+}
+
+message UnloggedReplyMessage {
+    required bytes reply = 1;
+}
+
+message PrepareMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    required uint64 batchstart = 3;
+    repeated Request request = 4;
+}
+
+message PrepareOKMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    required uint32 replicaIdx = 3;
+}
+
+message CommitMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+}
+
+message RequestStateTransferMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+}
+
+message StateTransferMessage {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    repeated specpaxos.MsgLogEntry entries = 3;
+}
+
+message StartViewChangeMessage {
+    required uint64 view = 1;
+    required uint32 replicaIdx = 2;
+    required uint64 lastCommitted = 3;
+}
+
+message DoViewChangeMessage {
+    required uint64 view = 1;
+    required uint64 lastNormalView = 2;
+    required uint64 lastOp = 3;
+    required uint64 lastCommitted = 4;
+    repeated specpaxos.MsgLogEntry entries = 5;
+    required uint32 replicaIdx = 6;
+}
+
+message StartViewMessage {
+    required uint64 view = 1;
+    required uint64 lastOp = 2;
+    required uint64 lastCommitted = 3;
+    repeated specpaxos.MsgLogEntry entries = 4;
+}
+
+message RecoveryMessage {
+    required uint32 replicaIdx = 1;
+    required uint64 nonce = 2;
+}
+
+message RecoveryResponseMessage {
+    required uint64 view = 1;
+    required uint64 nonce = 2;
+    repeated specpaxos.MsgLogEntry entries = 3;
+    optional uint64 lastOp = 4;
+    optional uint64 lastCommitted = 5;
+    required uint32 replicaIdx = 6;
+}

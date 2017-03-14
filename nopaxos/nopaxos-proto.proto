@@ -1,0 +1,125 @@
+import "common/request.proto";
+
+package specpaxos.nopaxos.proto;
+
+message RequestMessage {
+  required uint64 sessnum = 1;
+  required uint64 msgnum = 2;
+  required specpaxos.Request req = 3;
+}
+
+message ReplyMessage {
+  required uint64 view = 1;
+  required uint64 sessnum = 2;
+  required uint64 opnum = 3;
+  required uint64 clientreqid = 4;
+  required uint32 replicaidx = 5;
+  optional bytes reply = 6;
+}
+
+message UnloggedRequestMessage {
+  required specpaxos.UnloggedRequest req = 1;
+}
+
+message UnloggedReplyMessage {
+  required bytes reply = 1;
+}
+
+message GapRequestMessage {
+  required uint64 view = 1;
+  required uint64 sessnum = 2;
+  required uint64 opnum = 3;
+}
+
+message GapReplyMessage {
+  required uint64 view = 1;
+  required uint64 sessnum = 2;
+  required uint64 opnum = 3;
+  required bool isfound = 4;
+  required bool isgap = 5;
+  required uint32 replicaidx = 6;
+  optional specpaxos.Request req = 7;
+}
+
+message StateTransferRequestMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 begin = 3;
+  required uint64 end = 4;
+}
+
+message StateTransferReplyMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 begin = 3;
+  required uint64 end = 4;
+  repeated specpaxos.MsgLogEntry entries = 5;
+}
+
+message GapCommitMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 opnum = 3;
+}
+
+message GapCommitReplyMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 opnum = 3;
+  required uint32 replicaidx = 4;
+}
+
+message ViewChangeRequestMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+}
+
+message ViewChangeMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 lastnormalsessnum = 3;
+  required uint64 lastnormalview = 4;
+  required uint64 lastop = 5;
+  repeated uint64 committedgaps = 6;
+  required uint32 replicaidx = 7;
+}
+
+message StartViewMessage {
+  required uint64 sessnum = 1;
+  required uint64 view = 2;
+  required uint64 lastnormalsessnum = 3;
+  required uint64 lastnormalview = 4;
+  required uint64 lastop = 5;
+  repeated uint64 committedgaps = 6;
+}
+
+message StartViewReplyMessage {
+    required uint64 sessnum = 1;
+    required uint64 view = 2;
+    required uint32 replicaidx = 3;
+}
+
+message SyncPrepareRequestMessage {
+    required uint64 sessnum = 1;
+    required uint64 view = 2;
+}
+
+message SyncPrepareMessage {
+    required uint64 sessnum = 1;
+    required uint64 view = 2;
+    required uint64 lastop = 3;
+    repeated uint64 committedgaps = 4;
+}
+
+message SyncPrepareReplyMessage {
+    required uint64 sessnum = 1;
+    required uint64 view = 2;
+    required uint64 syncpoint = 3;
+    required uint32 replicaidx = 4;
+}
+
+message SyncCommitMessage {
+    required uint64 sessnum = 1;
+    required uint64 view = 2;
+    required uint64 syncpoint = 3;
+}

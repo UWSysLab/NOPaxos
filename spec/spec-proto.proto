@@ -1,0 +1,85 @@
+import "common/request.proto";
+
+package specpaxos.spec.proto;
+
+message RequestMessage {
+    required specpaxos.Request req = 1;
+}
+
+message SpeculativeReplyMessage {
+    required uint64 clientreqid = 1;
+    required uint32 replicaidx = 2;
+    required uint64 view = 3;
+    required uint64 opnum = 4;
+    required bytes loghash = 5;
+    required bytes reply = 6;
+    required bool committed = 7;
+}
+
+message UnloggedRequestMessage {
+    required specpaxos.UnloggedRequest req = 1;
+}
+
+message UnloggedReplyMessage {
+    required bytes reply = 1;
+}
+
+message SyncMessage {
+    required uint64 view = 1;
+    optional uint64 lastCommitted = 2;
+    optional bytes lastCommittedHash = 3;
+    optional uint64 lastSpeculative = 4;
+}
+
+message SyncReplyMessage {
+    required uint64 view = 1;
+    required uint64 lastSpeculative = 2;
+    required bytes lastSpeculativeHash = 3;
+    required uint32 replicaidx = 4;
+}
+
+// This is from a client to server.
+message RequestViewChangeMessage {
+    // Note that this is the view the client saw an operation fail in,
+    // not the desired new view. (It's not really the client's place
+    // to specify what the new view should be!)
+    required uint64 view = 1;
+}
+
+message StartViewChangeMessage {
+    required uint64 view = 1;
+    required uint32 replicaIdx = 2;
+    required uint64 lastCommitted = 3;
+}
+
+message DoViewChangeMessage {
+    required uint64 view = 1;
+    required uint64 lastNormalView = 2;
+    required uint64 lastSpeculative = 3;
+    required uint64 lastCommitted = 4;
+    repeated specpaxos.MsgLogEntry entries = 5;
+    required uint32 replicaIdx = 6;
+}
+
+message StartViewMessage {
+    required uint64 view = 1;
+    required uint64 lastSpeculative = 2;
+    required uint64 lastCommitted = 3;
+    repeated specpaxos.MsgLogEntry entries = 4;
+}
+
+message InViewMessage {
+    required uint64 view = 1;
+    required uint64 lastSpeculative = 2;
+    required uint32 replicaIdx = 3;
+}
+
+message FillLogGapMessage {
+    required uint64 view = 1;
+    required uint64 lastCommitted = 2;
+}
+
+message FillDVCGapMessage {
+    required uint64 view = 1;
+    required uint64 lastCommitted = 2;
+}

@@ -1,0 +1,30 @@
+package specpaxos;
+
+message ShardOp {
+    required uint32 shard = 1;
+    required bytes op = 2;
+}
+
+message Request {
+     required bytes op = 1;
+     required uint64 clientid = 2;
+     required uint64 clientreqid = 3;
+     repeated ShardOp ops = 4;
+}
+
+message UnloggedRequest {
+     required bytes op = 1;
+     required uint64 clientid = 2;
+     required uint64 clientreqid = 3;
+}
+
+message MsgLogEntry {
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    required uint64 sessnum = 3;
+    required uint64 msgnum = 4;
+    required uint32 shardnum = 5;
+    required Request request = 6;
+    required uint32 state = 7;
+    required bytes hash = 8;
+}

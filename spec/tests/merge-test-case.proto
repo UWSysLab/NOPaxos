@@ -1,0 +1,26 @@
+package specpaxos.spec.test;
+
+import "spec/spec-proto.proto";
+
+message TestLogEntry
+{
+    required uint64 view = 1;
+    required uint64 opnum = 2;
+    required string id = 3;
+    required bool spec = 4;
+}
+
+message TestLog
+{
+    required uint32 replicaidx = 1;
+    required uint64 view = 2;
+    required uint64 lastNormalView = 3;
+    repeated TestLogEntry entries = 4;
+}
+
+message MergeTestCase
+{
+    required uint64 newview = 1;
+    repeated TestLog log = 2;
+    repeated TestLogEntry expected = 3;
+}
