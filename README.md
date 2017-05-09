@@ -9,15 +9,15 @@ NOPaxos is a state machine replication protocol based on the
 idea of co-designing distributed systems with the datacenter
 network. NOPaxos divides replication responsibility between the
 network and protocol layers. The network orders requests but does
-not ensure reliable delivery - using a new network primitive,
-Ordered Unreliable Multicast(OUM). The replication protocol exploits
+not ensure reliable delivery -- using a new network primitive,
+Ordered Unreliable Multicast (OUM). The replication protocol exploits
 network ordering to provide strongly consistent replication without
 coordination.
 
 In normal case, NOPaxos avoids coordination entirely by relying on the
 network to deliver messages in the same order. It requires application-level
 coordination only to handle dropped packets. The resulting protocol is simple,
-achieveing near-optimal throughput and latency, and remains robust to
+achieving near-optimal throughput and latency, and remains robust to
 network-level failures.
 
 ## Contents
@@ -60,13 +60,13 @@ replica <hostname>:<port>
 multicast <multicast addr>:<port>
 ```
 
-Multicast address is optional. However, the Ordered Unreliable Multicast(OUM) implementation
-uses the multicast address as the OUM group address. One option is to use the broadcast
+Multicast address is optional. However, the Ordered Unreliable Multicast (OUM) implementation
+uses the multicast address as the OUM group address. For testing, a reasonable option is to use the broadcast
 address as multicast address.
 
 In order to run NOPaxos, you need to configure the network to route OUM packets first to the
-sequencer, and then multicast to all OUM receivers. The easiest way is to use OpenFlow and
-install rules that match on the multicast address.
+sequencer, and then multicast to all OUM receivers. How this is implemented would depend on 
+network design. The easiest way is to use OpenFlow and install rules that match on the multicast address.
 
 Our OUM implementation expects a custom header at the beginning of the UDP data, which contains
 the session number and message number described in the paper. If you need to write your own
@@ -81,10 +81,10 @@ interface <network interface name>
 groupaddr <multicast addr>
 ```
 
-The endhost sequencer uses raw socket so you need to provide the network interface name. `groupaddr`
+The endhost sequencer uses raw sockets, so you will need to provide the network interface name. `groupaddr`
 is the same as the multicast address used in the previous configuration. You can start the endhost
 sequencer with `sudo ./sequencer/sequencer -c <path to sequencer config file>` (sudo is required
-because of the use of raw socket)
+because of the use of raw sockets)
 
 You can then start a replica with `./bench/replica -c <path to config file> -i <replica number> -m <mode>`, where `mode` is either:
   - `nopaxos` for Network Ordered Paxos
