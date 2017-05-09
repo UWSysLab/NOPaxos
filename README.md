@@ -18,7 +18,7 @@ In normal case, NOPaxos avoids coordination entirely by relying on the
 network to deliver messages in the same order. It requires application-level
 coordination only to handle dropped packets. The resulting protocol is simple,
 achieving near-optimal throughput and latency, and remains robust to
-network-level failures.
+network-level failures. It not only outperforms both latency- and throughput-optimized protocols on their respective metrics, but also yields throughput within 2% and latency within 16 us of an unreplicated system -- providing replication without the performance cost.
 
 ## Contents
 
