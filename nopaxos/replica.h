@@ -111,6 +111,8 @@ private:
     std::set<opnum_t> committedGaps;
 
     /* Timeouts */
+    Timeout *startGapRequestTimeout;
+    const int START_GAP_REQUEST_TIMEOUT = 5;
     Timeout *gapRequestTimeout;
     const int GAP_REQUEST_TIMEOUT = 10;
     Timeout *gapCommitTimeout;

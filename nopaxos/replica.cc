@@ -84,6 +84,13 @@ NOPaxosReplica::NOPaxosReplica(const Configuration &config, int myIdx, bool init
 
     this->leaderLastSyncPreparePoint = 0;
 
+    this->startGapRequestTimeout = new Timeout(transport,
+                                               START_GAP_REQUEST_TIMEOUT,
+                                               [this, myIdx]() {
+                                                   RDebug("Start gap request timeout");
+                                                   this->startGapRequestTimeout->Stop();
+                                                   SendGapRequest();
+                                               });
     this->gapRequestTimeout = new Timeout(transport,
                                           GAP_REQUEST_TIMEOUT,
                                           [this, myIdx]() {
@@ -139,6 +146,7 @@ NOPaxosReplica::NOPaxosReplica(const Configuration &config, int myIdx, bool init
 
 NOPaxosReplica::~NOPaxosReplica()
 {
+    delete startGapRequestTimeout;
     delete gapRequestTimeout;
     delete gapCommitTimeout;
     delete viewChangeTimeout;
@@ -985,9 +993,10 @@ NOPaxosReplica::TryProcessClientRequest(const RequestMessage &msg)
         // before initiating a gap agreement protocol. Do
         // not ask again if we have already done so: timeout
         // will make sure we resend the request.
-        if (!gapRequestTimeout->Active() &&
+        if (!startGapRequestTimeout->Active() &&
+            !gapRequestTimeout->Active() &&
             !gapCommitTimeout->Active()) {
-            SendGapRequest();
+            this->startGapRequestTimeout->Reset();
         }
         // Try the request later once we received all
         // previous requests.
@@ -1029,6 +1038,9 @@ NOPaxosReplica::ProcessNextOperation(const Request &request,
     // client. Note if the leader is in the gap agreement
     // protocol, it won't process any client request, and
     // will eventually commit the log slot as NOOP.
+    if (this->startGapRequestTimeout->Active()) {
+        this->startGapRequestTimeout->Stop();
+    }
     if (this->gapRequestTimeout->Active()) {
         this->gapRequestTimeout->Stop();
         this->gapReplyQuorum.Clear();
@@ -1221,6 +1233,7 @@ void
 NOPaxosReplica::StartGapAgreement()
 {
     ASSERT(AmLeader());
+    this->startGapRequestTimeout->Stop();
     this->gapReplyQuorum.Clear();
     this->gapRequestTimeout->Stop();
 
@@ -1347,6 +1360,7 @@ NOPaxosReplica::EnterView(sessnum_t newsessnum, view_t newview) {
 void
 NOPaxosReplica::ClearTimeoutAndQuorums()
 {
+    this->startGapRequestTimeout->Stop();
     this->gapRequestTimeout->Stop();
     this->gapReplyQuorum.Clear();
     this->gapCommitTimeout->Stop();
