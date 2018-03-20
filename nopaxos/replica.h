@@ -88,8 +88,17 @@ private:
     std::map<uint64_t, ClientTableEntry> clientTable;
 
     /* Pending requests */
-    std::list<proto::RequestMessage> pendingRequests;
-    bool pendingRequestsSorted;
+    struct __pendreq_key_compare {
+        bool operator() (const proto::RequestMessage &lhs,
+                         const proto::RequestMessage &rhs) const
+        {
+            if (lhs.sessnum() < rhs.sessnum()) {
+                return true;
+            }
+            return lhs.msgnum() < rhs.msgnum();
+        }
+    };
+    std::set<proto::RequestMessage, __pendreq_key_compare> pendingRequests;
 
     /* Quorums */
     QuorumSet<opnum_t, proto::GapReplyMessage> gapReplyQuorum; // If none of the replicas received a message, the leader can immediately start gap agreement protocol

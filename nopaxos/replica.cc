@@ -74,8 +74,6 @@ NOPaxosReplica::NOPaxosReplica(const Configuration &config, int myIdx, bool init
     this->lastCommittedOp = 0;
     this->lastExecutedOp = 0;
 
-    this->pendingRequestsSorted = false;
-
     this->stateTransferOpBegin = 0;
     this->stateTransferOpEnd = 0;
     this->stateTransferReplicaIdx = 0;
@@ -1207,23 +1205,15 @@ NOPaxosReplica::ProcessPendingRequests()
 
     // Try if we can process pending requests
     // sort the pending requests in increasing sessnum msgnum first (performance optimization)
-    if (!this->pendingRequests.empty()) {
-        if (!this->pendingRequestsSorted) {
-            this->pendingRequests.sort(ComparePendingRequests);
-            this->pendingRequestsSorted = true;
+    while (!this->pendingRequests.empty()) {
+        if (!TryProcessClientRequest(*this->pendingRequests.begin())) {
+            // request is still pending, since we have
+            // already sorted the list, all subsequent
+            // requests will also be pending. Safe to return.
+            return;
         }
-
-        while (!this->pendingRequests.empty()) {
-            RequestMessage request = this->pendingRequests.front();
-            if (!TryProcessClientRequest(request)) {
-                // request is still pending, since we have
-                // already sorted the list, all subsequent
-                // requests will also be pending. Safe to return.
-                return;
-            }
-            // request is either processed, or is discarded
-            pendingRequests.pop_front();
-        }
+        // request is either processed, or is discarded
+        pendingRequests.erase(pendingRequests.begin());
     }
 }
 
@@ -1627,11 +1617,7 @@ NOPaxosReplica::AmLeader() const
 inline void
 NOPaxosReplica::AddPendingRequest(const RequestMessage &msg)
 {
-    if (msg.sessnum() >= this->sessnum &&
-        msg.msgnum() >= this->nextMsgnum) {
-        this->pendingRequests.push_back(msg);
-        this->pendingRequestsSorted = false;
-    }
+    this->pendingRequests.insert(msg);
 }
 
 inline bool
