@@ -120,6 +120,14 @@ BenchmarkClient::CooldownDone()
     LatencyFmtNS(ns, buf);
     Notice("Median latency is %ld ns (%s)", ns, buf);
 
+    ns = 0;
+    for (auto latency : latencies) {
+        ns += latency;
+    }
+    ns = ns / latencies.size();
+    LatencyFmtNS(ns, buf);
+    Notice("Average latency is %ld ns (%s)", ns, buf);
+
     ns = latencies[latencies.size()*90/100];
     LatencyFmtNS(ns, buf);
     Notice("90th percentile latency is %ld ns (%s)", ns, buf);
