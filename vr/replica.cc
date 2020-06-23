@@ -39,6 +39,7 @@
 #include "lib/transport.h"
 
 #include <algorithm>
+#include <random>
 
 #define RDebug(fmt, ...) Debug("[%d] " fmt, this->replicaIdx, ##__VA_ARGS__)
 #define RNotice(fmt, ...) Notice("[%d] " fmt, this->replicaIdx, ##__VA_ARGS__)
