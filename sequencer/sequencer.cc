@@ -255,7 +255,7 @@ Transport::ProcessPacket(uint8_t *packet, size_t len)
     /* Update udp header src field with the group bitmap.
      * Switches use this bitmap to perform group cast.
      */
-    udph->source = htons(group_bitmap);
+    //udph->source = htons(group_bitmap);
     udph->check = 0; // disable udp checksum
     return true;
 }
